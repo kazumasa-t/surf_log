@@ -1,0 +1,29 @@
+<h1>新しいサーフ記録</h1>
+
+<%= form_with model: @surf_session do |f| %>
+  <div>
+    <%= f.label :session_date, "日付" %><br>
+    <%= f.date_field :session_date %>
+  </div>
+
+  <div>
+    <%= f.label :duration_minutes, "時間（分）" %><br>
+    <%= f.number_field :duration_minutes %>
+  </div>
+
+  <div>
+    <%= f.label :note, "メモ" %><br>
+    <%= f.text_area :note %>
+  </div>
+
+  <div>
+    <%= f.label :photo, "写真" %><br>
+    <%= f.file_field :photo %>
+  </div>
+
+  <div>
+    <%= f.submit "保存" %>
+  </div>
+<% end %>
+
+<p><%= link_to "戻る", root_path %></p>
