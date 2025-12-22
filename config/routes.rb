@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
   root "surf_sessions#index"
-  resources :surf_sessions, only: [:index, :new, :create]
+  resources :surf_sessions, only: [:index, :new, :create, :edit, :update]
+
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

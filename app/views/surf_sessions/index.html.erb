@@ -1,36 +1,20 @@
 <h1>Surf Log</h1>
 
-<%= month_calendar do |date| %>
-  <div>
-    <%= link_to date.day, new_surf_session_path(surf_session: { session_date: date }) %>
+<p><%= notice %></p>
 
-    <% sessions = (@sessions_by_date || {})[date] || [] %>
-    <% sessions.each do |s| %>
-      <div style="font-size: 12px; margin-top: 4px;">
-        ● <%= (s.duration_minutes.to_i / 60.0).round(1) %>h
-      </div>
+<%= month_calendar do |date| %>
+  <% sessions = (@sessions_by_date || {})[date] || [] %>
+  <% existing = sessions.first %>
+
+  <div>
+    <% if existing %>
+      <%= link_to date.day, edit_surf_session_path(existing) %>
+      <div style="font-size: 12px; margin-top: 4px;">● <%= (existing.duration_minutes.to_i / 60.0).round(1) %>h</div>
+    <% else %>
+      <%= link_to date.day, new_surf_session_path(surf_session: { session_date: date }) %>
     <% end %>
   </div>
 <% end %>
 
 
-<p>
-  <%= link_to "新しい記録を追加", new_surf_session_path %>
-</p>
 
-<ul>
-  <% @surf_sessions.each do |session| %>
-    <li>
-      <strong><%= session.session_date %></strong>
-      <% if session.duration_minutes.present? %>
-        (<%= (session.duration_minutes / 60.0).round(1) %>h)
-      <% end %>
-      <br>
-      <%= session.note %>
-      <% if session.photo.attached? %>
-        <br><%= image_tag session.photo, style: "max-width: 200px;" %>
-      <% end %>
-
-    </li>
-  <% end %>
-</ul>
