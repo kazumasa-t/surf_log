@@ -4,6 +4,22 @@ class SurfSessionsController < ApplicationController
   def index
     @surf_sessions = current_user.surf_sessions.order(session_date: :desc)
     @sessions_by_date = @surf_sessions.group_by(&:session_date)
+    @best_session_id = @surf_sessions.max_by { |s| s.duration_minutes.to_i }&.id
+    # 連続サーフ日数（今日 or 昨日から遡る）
+      dates = current_user.surf_sessions
+        .where(session_date: ..Date.current)
+        .pluck(:session_date)
+        .uniq
+        .sort
+        .reverse
+
+      @streak_days = 0
+      dates.each_with_index do |date, i|
+        expected = Date.current - i
+        break unless date == expected
+        @streak_days += 1
+      end
+
   end
 
 
@@ -51,10 +67,16 @@ class SurfSessionsController < ApplicationController
     end
   end
 
+  def destroy
+    surf_session = current_user.surf_sessions.find(params[:id])
+    surf_session.destroy
+    redirect_to root_path, notice: "記録を削除しました"
+  end
+
 
   private
 
   def surf_session_params
-    params.require(:surf_session).permit(:session_date, :duration_minutes, :note, :photo)
+    params.require(:surf_session).permit(:session_date, :wave_size, :duration_minutes, :note, :photo)
   end
 end
