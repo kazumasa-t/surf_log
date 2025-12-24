@@ -1,0 +1,69 @@
+<div class="mypage-container">
+
+  <div class="surf-card">
+    <h2 class="card-title">プロフィール編集</h2>
+
+    <%= form_with model: @user, url: mypage_path, method: :patch, local: true, multipart: true do |f| %>
+
+      <div class="form-field">
+        <%= f.label :name, "名前" %>
+        <%= f.text_field :name, placeholder: "名前を入力" %>
+      </div>
+
+      <div class="form-field" style="margin-top: 16px;">
+        <%= f.label :bio, "自己紹介" %>
+        <%= f.text_area :bio, rows: 4, placeholder: "自己紹介を入力" %>
+      </div>
+
+      <div class="form-field" style="margin-top: 16px;">
+        <%= f.label :avatar, "プロフィール画像" %>
+
+        <% if @user.avatar.attached? %>
+          <div style="margin: 10px 0;">
+            <%= image_tag @user.avatar, style: "width:72px;height:72px;border-radius:50%;object-fit:cover;display:block;" %>
+          </div>
+        <% end %>
+
+        <div class="file-field input-field">
+          <div class="btn profile-upload-btn">
+            <span>プロフィール画像を選択</span>
+            <%= f.file_field :avatar, accept: "image/*" %>
+          </div>
+
+          
+        </div>
+
+
+      </div>
+
+      <div class="form-field" style="margin-top: 16px;">
+        <%= f.label :cover_image, "背景画像（ヘッダー）" %>
+
+        <% if @user.cover_image.attached? %>
+          <div style="margin: 10px 0;">
+            <%= image_tag @user.cover_image, style: "width:100%;height:120px;border-radius:12px;object-fit:cover;display:block;" %>
+          </div>
+        <% end %>
+
+        <div class="file-field input-field">
+          <div class="btn profile-upload-btn">
+            <span>背景画像を選択</span>
+            <%= f.file_field :cover_image, accept: "image/*" %>
+          </div>
+
+          
+        </div>
+
+
+      </div>
+
+      <div style="margin-top: 24px;">
+        <%= f.submit "保存", class: "btn profile-form-btn" %>
+        <%= link_to "戻る", mypage_path, class: "btn grey lighten-1 profile-form-btn", style: "margin-left: 8px;" %>
+      </div>
+
+
+    <% end %>
+  </div>
+
+</div>
