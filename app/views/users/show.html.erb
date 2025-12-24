@@ -1,0 +1,101 @@
+<div class="mypage-container">
+
+  <div class="profile-header">
+  <!-- 背景画像が入る場所（今は仮色） -->
+  <div class="profile-cover"
+     style="<%= @user.cover_image.attached? ? "background-image:url(#{url_for(@user.cover_image)});" : "" %>">
+  </div>
+
+  <!-- 白いカード -->
+  <div class="surf-card profile-card">
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar">
+        <% if @user.avatar.attached? %>
+          <%= image_tag @user.avatar, class: "avatar-img" %>
+        <% else %>
+          <span>👤</span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="profile-info">
+      <div class="profile-name">
+        <%= @user.name.presence || @user.email.split("@").first %>
+      </div>
+
+      <% if @user.bio.present? %>
+        <div class="profile-bio" style="margin-top: 8px; font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.6;">
+          <%= simple_format(@user.bio) %>
+        </div>
+      <% end %>
+
+      <div class="profile-email" style="margin-top: 6px;">
+        <%= @user.email %>
+      </div>
+
+      <div style="margin-top: 12px;">
+        <%= link_to "プロフィールを編集", mypage_edit_path, class: "btn profile-edit-btn" %>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+  <div class="surf-card summary-card">
+    <h2 class="card-title">サーフサマリー</h2>
+    
+  <div class="summary-row">
+    <div class="summary-label">これまでの合計</div>
+    <div class="summary-value">
+      <strong><%= @total_hours %>h</strong> / <strong><%= @total_days %>日</strong>
+    </div>
+  </div>
+
+  <div class="year-nav">
+    <%= link_to "‹", mypage_path(year: @prev_year), class: "year-arrow" %>
+    <div class="year-label"><%= @year %>年</div>
+    <%= link_to "›", mypage_path(year: @next_year), class: "year-arrow" %>
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-label"><%= @year %>年の合計</div>
+    <div class="summary-value">
+      <strong><%= @year_hours %>h</strong> / <strong><%= @year_days %>日</strong>
+    </div>
+  </div>
+
+  <div class="summary-diff">
+    前年比：
+    <strong class="<%= @diff_days >= 0 ? 'diff-plus' : 'diff-minus' %>">
+      <%= @diff_days >= 0 ? "+" : "" %><%= @diff_days %>日
+    </strong>
+    ／
+    <strong class="<%= @diff_hours >= 0 ? 'diff-plus' : 'diff-minus' %>">
+      <%= @diff_hours >= 0 ? "+" : "" %><%= @diff_hours %>h
+    </strong>
+  </div>
+
+  <% if @max_streak_days.to_i > 0 %>
+    <div class="summary-streak">
+      🏄 最大連続記録：<strong><%= @max_streak_days %></strong> 日
+    </div>
+  <% end %>
+
+  <% if @best_wave_size_year.present? %>
+    <div class="summary-best-wave">
+      ベスト波サイズ：
+      <span class="wave-chip"><%= @best_wave_size_year %></span>
+    </div>
+  <% end %>
+
+  </div>
+
+  <div class="logout-link-wrap">
+  <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: "logout-link" %>
+</div>
+
+  
+</div>
+
+

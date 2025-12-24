@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get "/mypage", to: "users#show"
+  get "/mypage/edit", to: "users#edit"
+  patch "/mypage", to: "users#update"
+
   devise_for :users
   root "surf_sessions#index"
   resources :surf_sessions, only: [:index, :new, :create, :edit, :update, :destroy]
