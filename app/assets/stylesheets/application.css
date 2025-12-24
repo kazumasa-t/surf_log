@@ -13,3 +13,476 @@
  *= require_tree .
  *= require_self
  */
+
+ /* Material-like soft card for calenda r */
+.calendar-card {
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  padding: 10px;
+  min-height: 90px;
+
+  /* 追加：サイズ固定 */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+/* simple_calendar header cleanup */
+.simple-calendar .calendar-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* ← 左右に分ける */
+  background: #fff !important;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  margin-bottom: 16px;
+}
+
+/* Force equal column widths in calendar */
+.simple-calendar table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.simple-calendar td, .simple-calendar th {
+  width: 14.2857%;
+}
+
+
+.simple-calendar .calendar-title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.simple-calendar nav a {
+  color: #1976d2;
+  font-weight: 500;
+  margin: 0 8px;
+}
+
+.simple-calendar nav a:hover {
+  text-decoration: underline;
+}
+
+/* Kill simple_calendar default red bar */
+.simple-calendar .calendar-heading,
+.simple-calendar .calendar-heading nav,
+.simple-calendar .calendar-heading nav a {
+  background: transparent !important;
+}
+
+.simple-calendar .calendar-heading nav {
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.simple-calendar .calendar-heading {
+  background: #fff !important;
+}
+
+/* Force calendar header layout: title left, nav right */
+.simple-calendar .calendar-heading {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.simple-calendar .calendar-heading .calendar-title {
+  margin: 0 !important;
+}
+
+.simple-calendar .calendar-heading nav {
+  margin-left: auto !important;
+}
+
+/* ===== Calendar cards (shared) ===== */
+.calendar-card {
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.calendar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.monthly-summary-values {
+  margin-bottom: 16px; /* 合計値の下に余白 */
+}
+
+/* ===== Mobile (<=480px) ===== */
+@media (max-width: 480px) {
+  /* Keep month view stable (table) */
+  .simple-calendar th {
+    font-size: 11px;
+    padding: 6px 0;
+  }
+  .simple-calendar td {
+    padding: 4px;
+    vertical-align: top;
+  }
+
+  /* Card compact + centered */
+  .calendar-card {
+    border-radius: 10px;
+    box-shadow: none;
+    padding: 6px !important;
+    min-height: 100px !important; /* ←ここはあなたの最終値 */
+    text-align: center;
+  }
+
+  /* Stack date + thumb vertically */
+  .calendar-top {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  /* Thumb sizing + alignment (works for both attached/not attached) */
+  .calendar-thumb-wrap {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+  }
+  .calendar-thumb {
+    width: 18px;
+    height: 18px;
+  }
+  .monthly-summary-title {
+    margin-bottom: 2px;
+    line-height: 1.2;
+  }
+
+  .monthly-summary-values {
+    line-height: 1.3;
+  }
+  .monthly-summary-title,
+  .monthly-summary-values {
+    text-align: center;
+  }
+}
+
+/* ===== Form UI (new/edit) ===== */
+.form-card {
+  max-width: 640px;
+  margin: 16px auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.form-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.form-field {
+  margin-bottom: 14px;
+}
+
+.form-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-field input[type="text"],
+.form-field input[type="number"],
+.form-field input[type="date"],
+.form-field textarea,
+.form-field input[type="file"]
+.form-field select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid rgba(0,0,0,0.18);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.form-field textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.btn-primary {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #1976d2;
+  color: #fff;
+  font-weight: 700;
+}
+
+.btn-secondary {
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #fff;
+  color: rgba(0,0,0,0.75);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 480px) {
+  .form-card { margin: 12px; }
+}
+
+/* Ensure select is visible (some CSS may collapse it) */
+.form-field select {
+  display: block;
+  width: 100%;
+  height: 44px;
+  box-sizing: border-box;
+
+  padding: 10px 40px 10px 12px; /* ← 右を大きく確保 */
+  border: 1px solid rgba(0,0,0,0.18);
+  border-radius: 10px;
+  background-color: #fff;
+
+  /* ネイティブ矢印を消す */
+  -webkit-appearance: none;
+  appearance: none;
+
+  /* 自前の矢印 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%23666' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+
+  margin-bottom: 20px;
+}
+
+/* Wave size color coding */
+.wave-none {
+  background: #eeeded;
+}
+
+.wave-small {
+  background: #e9f3fe; /* ヒザ〜モモ */
+}
+
+.wave-medium {
+  background: #d3e8fd; /* コシ〜ハラ */
+}
+
+.wave-good {
+  background: #cbeacf; /* ムネ〜カタ */
+}
+
+.wave-big {
+  background: #fedcdc; /* ～頭 */
+}
+
+.wave-over {
+  background: #fca8a8; /* オーバーヘッド */
+}
+
+.calendar-wave-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: rgba(255,255,255,0.7);
+}
+
+/* Highlight today */
+.calendar-card.is-today {
+  outline: 2px solid rgba(25, 118, 210, 0.35);
+  box-shadow: 0 2px 6px rgba(25, 118, 210, 0.18);
+}
+
+.calendar-card.is-today .calendar-date {
+  color: #1976d2;
+  font-weight: 800;
+}
+
+/* Best session star positioning */
+.best-star {
+  display: inline-block;
+}
+
+/* Mobile: take star out of the date row to avoid shifting */
+@media (max-width: 480px) {
+  .calendar-card {
+    position: relative; /* anchor for absolute star */
+  }
+
+  .best-star {
+    position: absolute;
+    top: 30px;
+    right: 2px;
+    line-height: 1;
+    font-size: 14px;
+  }
+}
+
+.monthly-summary-streak {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 152, 0, 0.12);
+  color: #e65100;
+  font-weight: 600;
+}
+s
+/* Mobile */
+@media (max-width: 480px) {
+  .monthly-summary-streak {
+    display: block;              /* 横幅を持たせる */
+    width: fit-content;          /* 中身サイズにする */
+    margin: 8px auto 16px;       /* ← 画面中央＋下余白 */
+    text-align: center;
+  }
+}
+
+.calendar-header-simple {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;              /* ← カレンダー幅に合わせる */
+  margin: 0 auto 12px;
+  padding: 6px 12px;
+
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+/* PCではカレンダーと同じ最大幅に揃える */
+@media (min-width: 768px) {
+  .calendar-header-simple {
+    max-width: 100%;
+  }
+}
+
+/* SPは今まで通りコンパクト */
+@media (max-width: 480px) {
+  .calendar-header-simple {
+    max-width: 360px;
+  }
+}
+
+
+.calendar-month-label {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+
+.calendar-arrow {
+  text-decoration: none;
+  color: #1976d2;
+  font-size: 20px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 10px;
+}
+
+.calendar-arrow:hover {
+  background: rgba(25,118,210,0.10);
+}
+
+/* Force-hide simple_calendar default header (all variants) */
+.simple-calendar .calendar-heading,
+.simple-calendar .calendar-heading *,
+.simple-calendar .calendar-title,
+.simple-calendar .calendar-nav {
+  display: none !important;
+}
+
+/* Center & spacing for streak badge */
+.monthly-summary-streak {
+  display: inline-block;
+  margin: 8px auto 16px;   /* ← 上8px / 下16px */
+}
+
+/* Mobile: ensure screen-centered */
+@media (max-width: 480px) {
+  .monthly-summary-streak {
+    display: block;
+    width: fit-content;
+    margin: 10px auto 20px; /* ← SPでは少し余白多め */
+    text-align: center;
+  }
+}
+
+.required {
+  color: #f0605d; /* Materialっぽい赤 */
+  margin-left: 2px;
+  font-weight: 700;
+}
+
+/* Danger delete button */
+.btn-delete{
+  display: block;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+
+  background-color: #f0605d;
+  color: #fff !important;
+
+  border-radius: 12px;
+  height: 44px;
+  line-height: 44px;
+
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.btn-delete:hover{
+  background-color: #f0605d;
+}
+
+/* SP: center thumbnail/wave icon in the card and keep size consistent */
+@media (max-width: 480px) {
+  .calendar-thumb-wrap {
+    width: 28px !important;
+    height: 28px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 6px auto 0 !important; /* 上に少し余白、左右中央 */
+    flex: 0 0 auto !important;
+  }
+
+  .calendar-thumb {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+
+  .calendar-wave-icon {
+    width: 28px !important;
+    height: 28px !important;
+    display: block !important;
+  }
+}

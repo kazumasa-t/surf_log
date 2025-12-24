@@ -1,20 +1,107 @@
-<h1>Surf Log</h1>
+<% month_start = params[:start_date].present? ? Date.parse(params[:start_date]) : Date.current.beginning_of_month %>
+<% month_range = month_start.beginning_of_month..month_start.end_of_month %>
+<% month_sessions = current_user.surf_sessions.where(session_date: month_range) %>
+<% total_minutes = month_sessions.sum(:duration_minutes).to_i %>
+<% total_hours = (total_minutes / 60.0).round(1) %>
+<% total_days = month_sessions.count %>
 
-<p><%= notice %></p>
+<div class="monthly-summary-title" style="font-weight: 700; font-size: 14px;">
+  今月のサーフ記録
+</div>
+<div class="monthly-summary-values" style="font-size: 13px;">
+  合計：<strong><%= total_hours %>h</strong> ／ <strong><%= total_days %>日</strong>
+</div>
+<% if @streak_days.to_i > 0 %>
+  <div class="monthly-summary-streak">
+    🔥 連続 <strong><%= @streak_days %></strong> 日サーフ中
+  </div>
+<% end %>
+
+
+<% base_date =
+  params[:start_date].present? ? Date.parse(params[:start_date]) : Date.current
+%>
+
+<div class="calendar-header-simple">
+  <%= link_to "‹",
+      url_for(start_date: base_date.prev_month.beginning_of_month),
+      class: "calendar-arrow",
+      aria: { label: "前の月" } %>
+
+  <div class="calendar-month-label">
+    <%= base_date.strftime("%Y / %m") %>
+  </div>
+
+  <%= link_to "›",
+      url_for(start_date: base_date.next_month.beginning_of_month),
+      class: "calendar-arrow",
+      aria: { label: "次の月" } %>
+</div>
+
 
 <%= month_calendar do |date| %>
   <% sessions = (@sessions_by_date || {})[date] || [] %>
   <% existing = sessions.first %>
 
-  <div>
-    <% if existing %>
-      <%= link_to date.day, edit_surf_session_path(existing) %>
-      <div style="font-size: 12px; margin-top: 4px;">● <%= (existing.duration_minutes.to_i / 60.0).round(1) %>h</div>
-    <% else %>
-      <%= link_to date.day, new_surf_session_path(surf_session: { session_date: date }) %>
-    <% end %>
-  </div>
+  <% target_path =
+      if existing
+        edit_surf_session_path(existing)
+      else
+        new_surf_session_path(surf_session: { session_date: date })
+      end
+  %>
+
+  <%= link_to target_path, style: "display:block; text-decoration:none; color:inherit;" do %>
+    <% wave_class =
+      case existing&.wave_size
+      when "ヒザ～モモ" then "wave-small"
+      when "コシ～ハラ" then "wave-medium"
+      when "ムネ～カタ" then "wave-good"
+      when "～頭" then "wave-big"
+      when "～オーバーヘッド" then "wave-over"
+      else "wave-none"
+      end
+    %>
+  <% is_today = date == Date.current %>  
+
+<div class="calendar-card <%= wave_class %> <%= 'is-today' if is_today %>" style="min-height: 90px;">
+
+
+      <div class="calendar-top">
+        <% is_best = existing && existing.id == @best_session_id %>
+          <div style="font-weight: 700; font-size: 14px; display:flex; align-items:center; gap:6px;">
+            <span class="calendar-date"><%= date.day %></span>
+            <% if is_best %>
+              <span class="best-star" title="今月のベストセッション">⭐</span>
+            <% end %>
+          </div>
+
+
+        <div class="calendar-thumb-wrap" style="width:36px;height:36px;">
+          <% if existing&.photo&.attached? %>
+            <%= image_tag existing.photo,
+                  class: "calendar-thumb",
+                  style: "width:36px;height:36px;border-radius:50%;object-fit:cover;display:block;" %>
+          <% else %>
+            <%= image_tag "wave.svg", class: "calendar-wave-icon", alt: "wave icon" %>
+          <% end %>
+        </div>
+
+
+      </div>
+
+      <% if existing %>
+        <div style="font-size: 12px; margin-top: 8px; color: rgba(0,0,0,0.6);">
+          <%= (existing.duration_minutes.to_i / 60.0).round(1) %>h
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 <% end %>
+
+
+
+
 
 
 
