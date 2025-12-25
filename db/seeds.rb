@@ -7,14 +7,3 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-
-[
-  "木崎浜",
-  "加江田",
-  "GAP",
-  "青島",
-  "恋ヶ浦",
-  "金ヶ浜"
-].each do |name|
-  Point.find_or_create_by!(name: name)
-end
