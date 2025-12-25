@@ -33,6 +33,7 @@ class SurfSessionsController < ApplicationController
     end
 
     @surf_session = current_user.surf_sessions.new(attrs)
+    @points = Point.order(:name)
   end
 
 
@@ -56,6 +57,7 @@ class SurfSessionsController < ApplicationController
 
   def edit
     @surf_session = current_user.surf_sessions.find(params[:id])
+    @points = Point.order(:name)
   end
 
   def update
@@ -77,6 +79,6 @@ class SurfSessionsController < ApplicationController
   private
 
   def surf_session_params
-    params.require(:surf_session).permit(:session_date, :wave_size, :duration_minutes, :note, :photo)
+    params.require(:surf_session).permit(:session_date, :wave_size, :duration_minutes, :note, :photo, :point_id)
   end
 end
