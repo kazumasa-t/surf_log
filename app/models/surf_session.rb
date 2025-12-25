@@ -1,5 +1,7 @@
 class SurfSession < ApplicationRecord
   belongs_to :user
+  belongs_to :point, optional: true
+
   has_one_attached :photo
 
   validates :session_date, presence: true
