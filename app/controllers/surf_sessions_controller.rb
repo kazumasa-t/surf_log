@@ -5,23 +5,21 @@ class SurfSessionsController < ApplicationController
     @surf_sessions = current_user.surf_sessions.order(session_date: :desc)
     @sessions_by_date = @surf_sessions.group_by(&:session_date)
     @best_session_id = @surf_sessions.max_by { |s| s.duration_minutes.to_i }&.id
-    # 連続サーフ日数（今日 or 昨日から遡る）
-      dates = current_user.surf_sessions
-        .where(session_date: ..Date.current)
-        .pluck(:session_date)
-        .uniq
-        .sort
-        .reverse
 
-      @streak_days = 0
-      dates.each_with_index do |date, i|
-        expected = Date.current - i
-        break unless date == expected
-        @streak_days += 1
-      end
+    dates = current_user.surf_sessions
+      .where(session_date: ..Date.current)
+      .pluck(:session_date)
+      .uniq
+      .sort
+      .reverse
 
+    @streak_days = 0
+    dates.each_with_index do |date, i|
+      expected = Date.current - i
+      break unless date == expected
+      @streak_days += 1
+    end
   end
-
 
   def new
     attrs = surf_session_params
@@ -36,8 +34,6 @@ class SurfSessionsController < ApplicationController
     @points = Point.order(:name)
   end
 
-
-
   def create
     date = surf_session_params[:session_date]
 
@@ -47,13 +43,21 @@ class SurfSessionsController < ApplicationController
     end
 
     @surf_session = current_user.surf_sessions.new(surf_session_params)
+
+    if params[:surf_session][:photo].present?
+      result = Cloudinary::Uploader.upload(
+        params[:surf_session][:photo].path,
+        folder: "surf_sessions"
+      )
+      @surf_session.photo_url = result["secure_url"]
+    end
+
     if @surf_session.save
       redirect_to root_path, notice: "記録を追加しました"
     else
       render :new, status: :unprocessable_entity
     end
   end
-
 
   def edit
     @surf_session = current_user.surf_sessions.find(params[:id])
@@ -62,6 +66,15 @@ class SurfSessionsController < ApplicationController
 
   def update
     @surf_session = current_user.surf_sessions.find(params[:id])
+
+    if params[:surf_session][:photo].present?
+      result = Cloudinary::Uploader.upload(
+        params[:surf_session][:photo].path,
+        folder: "surf_sessions"
+      )
+      @surf_session.photo_url = result["secure_url"]
+    end
+
     if @surf_session.update(surf_session_params)
       redirect_to root_path, notice: "更新しました"
     else
@@ -75,10 +88,15 @@ class SurfSessionsController < ApplicationController
     redirect_to root_path, notice: "記録を削除しました"
   end
 
-
   private
 
   def surf_session_params
-    params.require(:surf_session).permit(:session_date, :wave_size, :duration_minutes, :note, :photo, :point_id)
+    params.require(:surf_session).permit(
+      :session_date,
+      :wave_size,
+      :duration_minutes,
+      :note,
+      :point_id
+    )
   end
 end
