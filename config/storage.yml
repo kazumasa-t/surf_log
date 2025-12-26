@@ -14,6 +14,7 @@ cloudflare_r2:
   bucket: surf-log-images
   endpoint: <%= ENV["R2_ENDPOINT"] %>
   force_path_style: true
+  checksum_algorithm: nil
 
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
