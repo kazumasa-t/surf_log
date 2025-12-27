@@ -11,7 +11,7 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
-    <!-- Materialize (Material Design style) -->
+    <!-- Materialize -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
@@ -19,18 +19,48 @@
   <body class="grey lighten-4">
     <header class="app-header">
       <div class="app-header-inner">
-        <%= link_to "Surf Log", root_path, class: "app-logo" %>
+
+        <%# =============================== %>
+        <%# サービスロゴ                     %>
+        <%# shareページではクリック不可     %>
+        <%# =============================== %>
+        <% if controller_name == "share_links" %>
+          <span class="app-logo">Surf Log</span>
+        <% else %>
+          <%= link_to "Surf Log", root_path, class: "app-logo" %>
+        <% end %>
 
         <div class="app-nav">
-          <% if user_signed_in? %>
-            <%= link_to mypage_path, class: "nav-icon-link", title: "マイページ" do %>
+          <%# ========================================= %>
+          <%# 通常ページ（ログイン中）のみ表示        %>
+          <%# - shareアイコン（URLコピー）            %>
+          <%# - 人アイコン（マイページ）              %>
+          <%# ========================================= %>
+          <% if user_signed_in? && controller_name != "share_links" %>
+
+            <%# -------- shareアイコン -------- %>
+            <button
+              type="button"
+              class="nav-icon-link js-copy-share"
+              data-share-url="<%= share_url_for_current_month %>"
+              title="今月のサーフログを共有"
+              style="background:none;border:none;cursor:pointer;"
+            >
+              <i class="material-icons">share</i>
+            </button>
+
+            <%# -------- 人アイコン -------- %>
+            <%= link_to mypage_path,
+                  class: "nav-icon-link",
+                  title: "マイページ" do %>
               <i class="material-icons">person</i>
             <% end %>
+
           <% end %>
         </div>
+
       </div>
     </header>
-
 
     <main class="container" style="margin-top: 24px;">
       <% if notice.present? %>
@@ -44,6 +74,7 @@
           <%= alert %>
         </div>
       <% end %>
+
       <%= yield %>
     </main>
 

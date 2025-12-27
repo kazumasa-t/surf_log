@@ -887,3 +887,18 @@ s
   background: rgba(30, 136, 229, 0.10);
 }
 
+/* ================================
+   ヘッダー右側アイコン横並び
+   ================================ */
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* アイコン同士の間隔 */
+}
+
+/* アイコンボタン共通 */
+.app-nav .nav-icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
