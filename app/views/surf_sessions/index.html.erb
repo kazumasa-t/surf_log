@@ -77,15 +77,11 @@
           </div>
 
 
-        <div class="calendar-thumb-wrap" style="width:36px;height:36px;">
-          <% if existing&.photo&.attached? %>
-            <%= image_tag existing.photo,
-                  class: "calendar-thumb",
-                  style: "width:36px;height:36px;border-radius:50%;object-fit:cover;display:block;" %>
-          <% else %>
-            <%= image_tag "wave.svg", class: "calendar-wave-icon", alt: "wave icon" %>
-          <% end %>
-        </div>
+          <div class="calendar-thumb-wrap" style="width:36px;height:36px;">
+            <%= image_tag wave_icon_by_size(existing&.wave_size),
+                  class: "calendar-wave-icon",
+                  alt: "wave icon" %>
+          </div>
 
 
       </div>

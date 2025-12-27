@@ -37,18 +37,19 @@
           { include_blank: "選択してください" } %>
   </div>
 
-  <% if surf_session.persisted? && surf_session.photo.attached? %>
-    <div class="form-field">
-      <label>現在の写真</label><br>
-      <%= image_tag url_for(surf_session.photo),
+<%# <% if surf_session.persisted? && surf_session.photo.attached? %>
+<%#   <div class="form-field"> %>
+<%#     <label>現在の写真</label><br> %>
+<%#     <%= image_tag url_for(surf_session.photo),
             style: "width:100%; object-fit:cover; border-radius:12px;" %>
-    </div>
-  <% end %>
+<%#   </div> %>
+<%# <% end %>
 
-  <div class="form-field">
-    <%= f.label :photo, surf_session.persisted? ? "写真を変更" : "写真" %>
-    <%= f.file_field :photo, accept: "image/*" %>
-  </div>
+<%# <div class="form-field"> %>
+<%#   <%= f.label :photo, surf_session.persisted? ? "写真を変更" : "写真" %>
+<%#   <%= f.file_field :photo, accept: "image/*" %>
+<%# </div> %>
+
 
   <div class="form-field">
     <%= f.label :note, "メモ" %>
