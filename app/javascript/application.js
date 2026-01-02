@@ -29,7 +29,7 @@ document.addEventListener("turbo:load", () => {
         await navigator.clipboard.writeText(url);
 
         showToast(
-          `<span class="toast-icon">✔︎</span>${label}を共有しました`,
+          `<span class="toast-icon">✔︎</span>${label}の共有URLをコピーしました`,
           "green darken-2"
         );
 
