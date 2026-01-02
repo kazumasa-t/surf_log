@@ -20,10 +20,10 @@
     <header class="app-header">
       <div class="app-header-inner">
 
-        <%# =============================== %>
-        <%# サービスロゴ                     %>
-        <%# shareページではクリック不可     %>
-        <%# =============================== %>
+        <%# ===============================
+            サービスロゴ
+            shareページではクリック不可
+        =============================== %>
         <% if controller_name == "share_links" %>
           <span class="app-logo">Surf Log</span>
         <% else %>
@@ -31,25 +31,26 @@
         <% end %>
 
         <div class="app-nav">
-          <%# ========================================= %>
-          <%# 通常ページ（ログイン中）のみ表示        %>
-          <%# - shareアイコン（URLコピー）            %>
-          <%# - 人アイコン（マイページ）              %>
-          <%# ========================================= %>
+          <%# =========================================
+              通常ページ（ログイン中）のみ表示
+              ・shareアイコン（月ごと）
+              ・人アイコン
+          ========================================= %>
           <% if user_signed_in? && controller_name != "share_links" %>
 
-            <%# -------- shareアイコン -------- %>
+            <%# --- shareアイコン（表示中の月を共有） --- %>
             <button
               type="button"
               class="nav-icon-link js-copy-share"
-              data-share-url="<%= share_url_for_current_month %>"
-              title="今月のサーフログを共有"
+              data-share-url="<%= share_url_for_month(@base_date || Date.current) %>"
+              data-share-label="<%= (@base_date || Date.current).strftime('%Y年%-m月') %>"
+              title="表示中の月を共有"
               style="background:none;border:none;cursor:pointer;"
             >
               <i class="material-icons">share</i>
             </button>
 
-            <%# -------- 人アイコン -------- %>
+            <%# --- マイページ --- %>
             <%= link_to mypage_path,
                   class: "nav-icon-link",
                   title: "マイページ" do %>

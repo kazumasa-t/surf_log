@@ -902,3 +902,69 @@ s
   align-items: center;
   justify-content: center;
 }
+
+/* =========================================
+   Materialize トーストの見た目調整
+   ========================================= */
+
+/* トーストが他要素に隠れないように */
+#toast-container {
+  z-index: 10000;
+}
+
+/* 成功トースト（微調整したい場合） */
+.toast.green.darken-2 {
+  background-color: #2e7d32 !important; /* Material Green */
+}
+
+/* 失敗トースト */
+.toast.red.darken-2 {
+  background-color: #c62828 !important; /* Material Red */
+}
+
+/* =========================================
+   トースト内アイコン調整
+   ========================================= */
+
+.toast-icon {
+  display: inline-block;
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+/* =========================================
+   トースト内アイコンとテキストの間隔調整
+   ========================================= */
+
+.toast {
+  display: flex !important;
+  align-items: center;
+}
+
+.toast-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 10px; /* ← ここが希望どおり10px */
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   Materialize toast アイコンとテキストの間隔修正
+   ========================================= */
+
+#toast-container .toast {
+  display: flex !important;
+  justify-content: flex-start !important; /* ← これが決定打 */
+  align-items: center !important;
+  gap: 10px; /* ← アイコンと文字の間隔を10pxに固定 */
+}
+
+#toast-container .toast span {
+  margin: 0 !important; /* デフォルト余白を完全除去 */
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  font-weight: 700;
+}
