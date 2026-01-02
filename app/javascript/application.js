@@ -1,17 +1,11 @@
 // app/javascript/application.js
 
-// Turbo
 import "@hotwired/turbo-rails"
 import "controllers"
 
-// -------------------------------------
-// Turbo読み込み完了時の共通処理
-// -------------------------------------
 document.addEventListener("turbo:load", () => {
 
-  // =====================================
   // フラッシュメッセージ自動消去
-  // =====================================
   document.querySelectorAll(".flash-message").forEach((flash) => {
     setTimeout(() => {
       flash.style.transition = "opacity 0.4s ease";
@@ -23,22 +17,42 @@ document.addEventListener("turbo:load", () => {
     }, 3000);
   });
 
-  // =====================================
-  // 共有URLコピー処理（shareアイコン）
-  // =====================================
-  const shareButton = document.querySelector(".js-copy-share");
-  if (!shareButton) return;
+  // 共有URLコピー（トースト）
+  document.querySelectorAll(".js-copy-share").forEach((shareButton) => {
+    shareButton.addEventListener("click", async () => {
+      const url = shareButton.dataset.shareUrl;
+      const label = shareButton.dataset.shareLabel || "この月";
 
-  shareButton.addEventListener("click", async () => {
-    const url = shareButton.dataset.shareUrl;
-    if (!url || url === "#") return;
+      if (!url || url === "#") return;
 
-    try {
-      await navigator.clipboard.writeText(url);
-      alert("今月のサーフログ共有用URLをコピーしました");
-    } catch (error) {
-      alert("コピーに失敗しました");
-    }
+      try {
+        await navigator.clipboard.writeText(url);
+
+        showToast(
+          `<span class="toast-icon">✔︎</span>${label}を共有しました`,
+          "green darken-2"
+        );
+
+      } catch (error) {
+        showToast(
+          `<span class="toast-icon">✖</span>コピーに失敗しました`,
+          "red darken-2"
+        );
+      }
+    });
   });
 
 });
+
+// Materialize トースト表示
+function showToast(message, classes = "") {
+  if (window.M && typeof M.toast === "function") {
+    M.toast({
+      html: message,
+      classes: classes,
+      displayLength: 2500
+    });
+  } else {
+    alert(message.replace(/<[^>]*>/g, ""));
+  }
+}

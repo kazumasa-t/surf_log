@@ -1,19 +1,17 @@
 <%# ========================================= %>
-<%# 月間サーフサマリー表示 %>
-<%# controller から以下を受け取る想定 %>
-<%# - base_date %>
-<%# - total_hours %>
-<%# - total_days %>
-<%# - streak_days %>
-<%# - sessions_by_date %>
-<%# - editable（true/false） %>
+<%# 月間カレンダー共通パーシャル              %>
+<%# ・通常ページ / shareページ 共通            %>
+<%# ・base_date を必ず基準に描画する            %>
 <%# ========================================= %>
 
-<div class="monthly-summary-title" style="font-weight: 700; font-size: 14px;">
+<%# ------------------------------ %>
+<%# 月間サマリー                  %>
+<%# ------------------------------ %>
+<div class="monthly-summary-title" style="font-weight:700; font-size:14px;">
   今月のサーフ記録
 </div>
 
-<div class="monthly-summary-values" style="font-size: 13px;">
+<div class="monthly-summary-values" style="font-size:13px;">
   合計：<strong><%= total_hours %>h</strong> ／ <strong><%= total_days %>日</strong>
 </div>
 
@@ -23,86 +21,68 @@
   </div>
 <% end %>
 
-<%# ======================= %>
-<%# カレンダーヘッダー %>
-<%# ======================= %>
-
-<div class="calendar-header-simple">
-  <% if editable %>
+<%# ------------------------------ %>
+<%# 月切り替えヘッダー            %>
+<%# shareページでは非表示          %>
+<%# ------------------------------ %>
+<% if editable %>
+  <div class="calendar-header-simple">
     <%= link_to "‹",
         url_for(start_date: base_date.prev_month.beginning_of_month),
         class: "calendar-arrow",
         aria: { label: "前の月" } %>
-  <% end %>
 
-  <div class="calendar-month-label">
-    <%= base_date.strftime("%Y / %m") %>
-  </div>
+    <div class="calendar-month-label">
+      <%= base_date.strftime("%Y / %m") %>
+    </div>
 
-  <% if editable %>
     <%= link_to "›",
         url_for(start_date: base_date.next_month.beginning_of_month),
         class: "calendar-arrow",
         aria: { label: "次の月" } %>
-  <% end %>
-</div>
+  </div>
+<% else %>
+  <div class="calendar-month-label" style="margin-bottom:12px;">
+    <%= base_date.strftime("%Y / %m") %>
+  </div>
+<% end %>
 
-<%# ======================= %>
-<%# カレンダー本体 %>
-<%# ======================= %>
+<%# ------------------------------ %>
+<%# カレンダー本体（重要）        %>
+<%# simple_calendar は start_date %>
+<%# ------------------------------ %>
+<%= month_calendar(start_date: base_date) do |date| %>
 
-<%= month_calendar do |date| %>
   <% sessions = (sessions_by_date || {})[date] || [] %>
   <% existing = sessions.first %>
 
-  <%# 通常ページのみ編集リンクを有効にする %>
-  <% if editable %>
-    <% target_path =
-      existing ?
-        edit_surf_session_path(existing) :
-        new_surf_session_path(surf_session: { session_date: date })
-    %>
-  <% end %>
+  <% wave_class =
+    case existing&.wave_size
+    when "ヒザ～モモ" then "wave-small"
+    when "コシ～ハラ" then "wave-medium"
+    when "ムネ～カタ" then "wave-good"
+    when "～頭" then "wave-big"
+    when "～オーバーヘッド" then "wave-over"
+    else "wave-none"
+    end %>
 
-  <% wrapper_tag = editable ? :a : :div %>
-  <% wrapper_options =
-      editable ?
-        { href: target_path, style: "display:block; text-decoration:none; color:inherit;" } :
-        {}
-  %>
+  <div class="calendar-card <%= wave_class %>" style="min-height:90px;">
 
-  <%= content_tag wrapper_tag, wrapper_options do %>
-    <% wave_class =
-      case existing&.wave_size
-      when "ヒザ～モモ" then "wave-small"
-      when "コシ～ハラ" then "wave-medium"
-      when "ムネ～カタ" then "wave-good"
-      when "～頭" then "wave-big"
-      when "～オーバーヘッド" then "wave-over"
-      else "wave-none"
-      end
-    %>
+    <div class="calendar-top">
+      <span class="calendar-date"><%= date.day %></span>
 
-    <% is_today = date == Date.current %>
-
-    <div class="calendar-card <%= wave_class %> <%= 'is-today' if is_today %>" style="min-height: 90px;">
-      <div class="calendar-top">
-        <div style="font-weight: 700; font-size: 14px; display:flex; align-items:center; gap:6px;">
-          <span class="calendar-date"><%= date.day %></span>
-        </div>
-
-        <div class="calendar-thumb-wrap" style="width:36px;height:36px;">
-          <%= image_tag wave_icon_by_size(existing&.wave_size),
-                class: "calendar-wave-icon",
-                alt: "wave icon" %>
-        </div>
+      <div class="calendar-thumb-wrap" style="width:36px;height:36px;">
+        <%= image_tag wave_icon_by_size(existing&.wave_size),
+              class: "calendar-wave-icon",
+              alt: "wave icon" %>
       </div>
-
-      <% if existing %>
-        <div style="font-size: 12px; margin-top: 8px; color: rgba(0,0,0,0.6);">
-          <%= (existing.duration_minutes.to_i / 60.0).round(1) %>h
-        </div>
-      <% end %>
     </div>
-  <% end %>
+
+    <% if existing %>
+      <div style="font-size:12px; margin-top:8px; color:rgba(0,0,0,0.6);">
+        <%= (existing.duration_minutes.to_i / 60.0).round(1) %>h
+      </div>
+    <% end %>
+
+  </div>
 <% end %>
