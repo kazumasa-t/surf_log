@@ -1,12 +1,10 @@
 <%# ========================================= %>
-<%# 月間カレンダー共通パーシャル              %>
+<%# 月間カレンダー共通パーシャル（完成版）    %>
 <%# ・通常ページ / shareページ 共通            %>
-<%# ・base_date を必ず基準に描画する            %>
+<%# ・editable=true のときだけクリック可能     %>
+<%# ・今日の日付は is-today で枠線表示          %>
 <%# ========================================= %>
 
-<%# ------------------------------ %>
-<%# 月間サマリー                  %>
-<%# ------------------------------ %>
 <div class="monthly-summary-title" style="font-weight:700; font-size:14px;">
   今月のサーフ記録
 </div>
@@ -21,16 +19,11 @@
   </div>
 <% end %>
 
-<%# ------------------------------ %>
-<%# 月切り替えヘッダー            %>
-<%# shareページでは非表示          %>
-<%# ------------------------------ %>
 <% if editable %>
   <div class="calendar-header-simple">
     <%= link_to "‹",
         url_for(start_date: base_date.prev_month.beginning_of_month),
-        class: "calendar-arrow",
-        aria: { label: "前の月" } %>
+        class: "calendar-arrow" %>
 
     <div class="calendar-month-label">
       <%= base_date.strftime("%Y / %m") %>
@@ -38,8 +31,7 @@
 
     <%= link_to "›",
         url_for(start_date: base_date.next_month.beginning_of_month),
-        class: "calendar-arrow",
-        aria: { label: "次の月" } %>
+        class: "calendar-arrow" %>
   </div>
 <% else %>
   <div class="calendar-month-label" style="margin-bottom:12px;">
@@ -47,14 +39,19 @@
   </div>
 <% end %>
 
-<%# ------------------------------ %>
-<%# カレンダー本体（重要）        %>
-<%# simple_calendar は start_date %>
-<%# ------------------------------ %>
 <%= month_calendar(start_date: base_date) do |date| %>
 
   <% sessions = (sessions_by_date || {})[date] || [] %>
   <% existing = sessions.first %>
+  <% is_today = date == Date.current %>
+
+  <% target_path =
+      if existing
+        edit_surf_session_path(existing)
+      else
+        new_surf_session_path(surf_session: { session_date: date })
+      end
+  %>
 
   <% wave_class =
     case existing&.wave_size
@@ -66,23 +63,42 @@
     else "wave-none"
     end %>
 
-  <div class="calendar-card <%= wave_class %>" style="min-height:90px;">
+  <% if editable %>
+    <%= link_to target_path, style: "display:block; text-decoration:none; color:inherit;" do %>
+      <div class="calendar-card <%= wave_class %> <%= 'is-today' if is_today %>" style="min-height:90px;">
+        <div class="calendar-top">
+          <span class="calendar-date"><%= date.day %></span>
+          <div class="calendar-thumb-wrap" style="width:36px;height:36px;">
+            <%= image_tag wave_icon_by_size(existing&.wave_size),
+                  class: "calendar-wave-icon",
+                  alt: "wave icon" %>
+          </div>
+        </div>
 
-    <div class="calendar-top">
-      <span class="calendar-date"><%= date.day %></span>
-
-      <div class="calendar-thumb-wrap" style="width:36px;height:36px;">
-        <%= image_tag wave_icon_by_size(existing&.wave_size),
-              class: "calendar-wave-icon",
-              alt: "wave icon" %>
-      </div>
-    </div>
-
-    <% if existing %>
-      <div style="font-size:12px; margin-top:8px; color:rgba(0,0,0,0.6);">
-        <%= (existing.duration_minutes.to_i / 60.0).round(1) %>h
+        <% if existing %>
+          <div style="font-size:12px; margin-top:8px; color:rgba(0,0,0,0.6);">
+            <%= (existing.duration_minutes.to_i / 60.0).round(1) %>h
+          </div>
+        <% end %>
       </div>
     <% end %>
+  <% else %>
+    <div class="calendar-card <%= wave_class %> <%= 'is-today' if is_today %>" style="min-height:90px;">
+      <div class="calendar-top">
+        <span class="calendar-date"><%= date.day %></span>
+        <div class="calendar-thumb-wrap" style="width:36px;height:36px;">
+          <%= image_tag wave_icon_by_size(existing&.wave_size),
+                class: "calendar-wave-icon",
+                alt: "wave icon" %>
+        </div>
+      </div>
 
-  </div>
+      <% if existing %>
+        <div style="font-size:12px; margin-top:8px; color:rgba(0,0,0,0.6);">
+          <%= (existing.duration_minutes.to_i / 60.0).round(1) %>h
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
 <% end %>
